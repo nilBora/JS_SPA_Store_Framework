@@ -1,11 +1,11 @@
 <template>
     <v-flex xs12 
     v-if="itemField.type === 'image' && itemField.onlyList === false">
-        <img :src="frame[nameField]" alt="">
+        <img :src="currentFrame[nameField]" alt="">
     </v-flex>
     <v-flex xs12 
     v-else-if="itemField.type === 'textarea' && itemField.onlyList === false">
-    <v-text-field textarea v-model="frame[nameField]" :label="itemField.caption">
+    <v-text-field textarea v-model="currentFrame[nameField]" :label="itemField.caption">
     </v-text-field>
     </v-flex>
     <v-flex xs12 
@@ -20,31 +20,31 @@
     >
         <template v-slot:activator="{ on }">
         <v-text-field
-            v-model="frame[nameField]"
+            v-model="currentFrame[nameField]"
             label="Picker without buttons"
             prepend-icon="event"
             readonly
             v-on="on"
         ></v-text-field>
         </template>
-        <v-date-picker v-model="frame[nameField]" @input="menu2 = false"></v-date-picker>
+        <v-date-picker v-model="currentFrame[nameField]" @input="menu2 = false"></v-date-picker>
     </v-menu>
     </v-flex>
     <v-flex xs12 
     v-else-if="itemField.type === 'datetime' && itemField.onlyList === false">
-    <!-- <datetime v-model="frame[nameField]" type="datetime"></datetime> -->
+    <!-- <datetime v-model="currentFrame[nameField]" type="datetime"></datetime> -->
     </v-flex>
     <v-flex xs12 
     v-else-if="itemField.type === 'checkbox' && itemField.onlyList === false">
         <v-switch
         :label="itemField.caption"
-        v-model="frame[nameField]"
+        v-model="currentFrame[nameField]"
         ></v-switch>
     </v-flex>
     <v-flex xs12 
     v-else-if="itemField.onlyList === false">
         <v-text-field 
-        v-model="Cframe[nameField]" 
+        v-model="currentFrame[nameField]" 
         :label="itemField.caption" 
         :mask="itemField.mask"
         :placeholder="itemField.placeholder"
@@ -79,7 +79,7 @@ export default {
   },
   data() {
       return {
-        Cframe: this.getEmptyBlankData(),
+        currentFrame: this.getEmptyBlankData(),
       }
   },
   computed: {
@@ -89,21 +89,19 @@ export default {
   methods: { 
     getEmptyBlankData() {
         let fields = this.getFields();
-        let Cframe = {};
+        let currentFrame = {};
         for (var key in fields) {
-            Cframe[key] = null;
+            currentFrame[key] = null;
         }
 
-        return Cframe
+        return currentFrame
     },
     handleUpdate(item) {
-         console.log("!!!handleUpdate EDIT!!!");
          let fields = this.getFields();
         
          for (var key in fields) {
             this.frame[key] = item[key];
-            this.Cframe[key] = item[key];
-            console.log(key + " : " + this.frame[key]);
+            this.currentFrame[key] = item[key];
          // if (fields[key]['type'] === 'datetime') {
 
          // } 
