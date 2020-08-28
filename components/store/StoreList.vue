@@ -1,39 +1,44 @@
-<template>
-    <td v-if="itemField.type === 'image'">
-        <v-avatar size="32">
-            <img :src="dataFields.item.avatar" alt="">
-        </v-avatar>
-    </td>
-    <td v-else-if="itemField.type === 'checkbox'">
-        <v-btn v-if="dataFields.item[nameField] === 1" flat icon color="green">
-            <v-icon>check_circle</v-icon>
-        </v-btn>
-        <v-btn v-else="dataFields.item[nameField] === 0" flat icon color="grey">
-            <v-icon>check_circle</v-icon>
-        </v-btn>
-    </td>
-    <td v-else>{{ dataFields.item[nameField] }}</td>
-
+<template v-for="(item, name, key) in getAllFields()">
+    <store-list-items 
+        v-bind:itemField="item" 
+        v-bind:key="key" 
+        :nameField="name" 
+        v-bind:dataFields="data">
+    </store-list-items>
 </template>
 
 <script>
+import StoreListItems from '@/components/store/StoreListItems';
 export default {
+  components: {
+      StoreListItems
+  },
   name: 'store-list',  
   props: {
-    nameField: {
-        type: String
-    },
-    itemField: {
+    // nameField: {
+    //     type: String
+    // },
+    // itemField: {
+    //     type: Object
+    // },
+    data: {
         type: Object
     },
-    dataFields: {
+    allFields: {
         type: Object
     }
   },
   data: () => ({
+      key: null,
+      item: {},
+      name: null
   }),
   methods: {
-
+      getAllFields() {
+          console.log("All Fields In Store List");
+          console.log(this.allFields);
+          return this.allFields;
+      }
   }
 };
 </script>

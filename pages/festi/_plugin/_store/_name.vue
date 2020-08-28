@@ -9,6 +9,7 @@
           <v-card>
             
             <v-toolbar card color="white">
+              
               <v-text-field
                 flat
                 solo
@@ -21,6 +22,12 @@
               <v-btn icon>
                 <v-icon>filter_list</v-icon>
               </v-btn>
+              <v-tooltip bottom>
+                <v-btn icon slot="activator" @click="openInsertForm()">
+                  <v-icon color="text--secondary">add</v-icon>
+                </v-btn>
+                <span>Add</span>
+              </v-tooltip>
             </v-toolbar>
             <v-divider></v-divider>
             <v-card-text class="pa-0">
@@ -42,7 +49,13 @@
                       v-model="props.selected"
                     ></v-checkbox>
                   </td>
-                   <store-list v-for="(item, name, key) in getFields()" v-bind:itemField="item" v-bind:key="key" :nameField="name" v-bind:dataFields="props"></store-list>
+                   <store-list-items v-for="(item, name, key) in getFields()" 
+                               v-bind:itemField="item" 
+                               v-bind:key="key" 
+                               :nameField="name" 
+                               v-bind:dataFields="props">
+                    </store-list-items>
+                      <!-- <store-list :allFields="getFields()" v-bind:data="props"></store-list> -->
                   <td>
                      <store-actions-list v-for="(item, name, key) in getActions()" 
                                         v-bind:itemField="item" 
@@ -52,8 +65,8 @@
                                         :actions="getActions()"
                                         v-bind:frame="frame"
                                         :allFields="getFields()"
-                                        v-bind:basic="basic"
-                                        ></store-actions-list>
+                                        v-bind:basic="basic">
+                      </store-actions-list>
                   </td>
                 </template>
               </v-data-table>
@@ -61,8 +74,9 @@
             <store-basic-dialog v-bind:basic="basic"
                                 v-bind:frame="frame"
                                 :actions="getActions()"
-                                :allFields="getFields()">
-            ></store-basic-dialog>
+                                :allFields="getFields()"
+                                ref="basic_dialog">
+            </store-basic-dialog>
           </v-card>
         </v-flex>
       </v-layout>
@@ -73,31 +87,31 @@
 
 <script>
   import StoreList from '@/components/store/StoreList';
-  //import StoreEditList from '@/components/store/StoreEditList';
+  import StoreListItems from '@/components/store/StoreListItems';
   import StoreActionsList from '@/components/store/StoreActionsList';
   import StoreBasicDialog from '@/components/store/StoreBasicDialog';
   import * as Data from '@/api/data';
-  import { Datetime } from 'vue-datetime';
   import axios from "axios";
 
   export default {
     components: {
-      Datetime,
       StoreList,
-      //StoreEditList,
+      StoreListItems,
       StoreActionsList,
       StoreBasicDialog
     },
     data() {
       return {
-      date: new Date().toISOString().substr(0, 10),
-      dateFormatted: this.formatDate(new Date().toISOString().substr(0, 10)),
-      menu2: false,
-
+        date: new Date().toISOString().substr(0, 10),
+        dateFormatted: this.formatDate(new Date().toISOString().substr(0, 10)),
+        menu2: false,
+        frame: {},
         basic: {
-          dialog: false,
-           startDate: null,
-           startDateMenu: false,
+            dialog: false,
+            action: 'edit',
+            dialogName: '',
+            startDate: null,
+            startDateMenu: false,
         },
         search: '',
         complex: {
@@ -118,14 +132,14 @@
       computedDateFormatted () {
         return this.formatDate(this.date)
       },
-      frame: {
-        get() {
-          return this.$store.state.dgs.mainFrame;
-        },
-        set(value) {
-           this.$store.commit('dgs/addMainFrame', value)
-        }
-      }
+      // frame: {
+      //   get() {
+      //     return this.$store.state.dgs.mainFrame;
+      //   },
+      //   set(value) {
+      //      this.$store.commit('dgs/addMainFrame', value)
+      //   }
+      // }
     },
     watch: {
       date (val) {
@@ -138,26 +152,11 @@
             return actions.list.caption;
         },
         getFields: function() {
-            return Data.getFields(this.$store.state.dgs.struct);
+          return Data.getFields(this.$store.state.dgs.struct);
         },
 
         getActions: function() {
           return Data.getActions(this.$store.state.dgs.struct);
-        },
-
-        getAction(key) {
-          let actions = this.getActions();
-          if (key in actions) {
-            return actions[key]
-          }
-        },
-
-        getDialogName(item) {
-          let caption = this.getAction('edit').caption
-          
-          caption = caption.replace("%id%", item.id);
-          
-          return caption
         },
 
         formatDate (date) {
@@ -172,6 +171,20 @@
           const [month, day, year] = date.split('/')
           return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
         },
-    }
+
+        openInsertForm() {
+          this.basic.dialog = true;
+          this.basic.action = 'insert';
+          this.basic.dialogName = "Insert New Row";
+          this.$refs.basic_dialog.openInsertForm(this.basic);
+        }
+    },
+    mounted() {
+      this.$nuxt.$on('onSaveEditForm', (currentFrame) => {
+        console.log('ON SAVE StoreEditList');
+        console.log(currentFrame.host + " : " + currentFrame.link);
+        //console.log(this.$refs.store_list.$forceUpdate());
+      });
+  }
   };
 </script>

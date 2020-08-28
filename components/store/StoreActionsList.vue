@@ -28,7 +28,7 @@ export default {
        type: Object 
     },
     frame: {
-        type: Array
+        type: Object
     },
     basic: {
         type: Object
@@ -40,8 +40,13 @@ export default {
       handleUpdateChild(item) {
           //Subscriber in StoreEditList
           this.$root.$emit('handleUpdateEditRoot', item);
-          
-      }
-  }
+          //this.$nuxt.$emit('handleUpdateEditRootBasicDialog', item);
+      },
+  },
+//   mounted() {
+//       this.$nuxt.$on('onSaveEditForm', (frame) => {
+//           this.$forceUpdate();
+//       });
+//   }
 };
 </script>
