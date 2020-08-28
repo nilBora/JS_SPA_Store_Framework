@@ -122,7 +122,7 @@
       };
     },
     fetch ({ store, params }) {
-      return axios.get('http://api.v2.skimp.tk.local:8080/v1/shortener/')
+      return axios.get(process.env.apiUrl+'/v1/shortener/')
       .then((res) => {
         store.commit('dgs/addItems', res.data.items)
         store.commit('dgs/addStruct', res.data.struct)

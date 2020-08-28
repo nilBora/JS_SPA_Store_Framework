@@ -161,14 +161,14 @@ export default {
           let $this = this;
           if (this.isCurrentActionEdit()) {
             console.log('Edit');
-            axios.post('http://api.v2.skimp.tk.local:8080/v1/shortener/'+this.currentFrame.activeID, this.currentFrame)
+            axios.post(process.env.apiUrl+'/v1/shortener/'+this.currentFrame.activeID, this.currentFrame)
                 .then((result) => {
                     console.log(result)
                     this.$nuxt.$emit('onSaveEditForm', this.currentFrame);
                 });
           } else if (this.isCurrentActionInsert()) {
               console.log('Insert');
-              axios.post('http://api.v2.skimp.tk.local:8080/v1/shortener/', this.currentFrame)
+              axios.post(process.env.apiUrl+'/v1/shortener/', this.currentFrame)
                 .then((result) => {
                     console.log(result)
                     this.$nuxt.$emit('onSaveEditForm', this.currentFrame);
