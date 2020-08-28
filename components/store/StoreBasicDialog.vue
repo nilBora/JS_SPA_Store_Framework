@@ -180,6 +180,7 @@ export default {
           //this.$refs.storeEditList.onSaveEditForm();
     },
     handleUpdate(item) {
+        this.currentFrame = this.getEmptyBlankData();
         let fields = this.getFields();
         
         for (var key in fields) {
