@@ -159,19 +159,24 @@ export default {
           console.log("SAVE!!!");
           
           let $this = this;
+          let baseUrl = this.getBaseUrl();
           if (this.isCurrentActionEdit()) {
             console.log('Edit');
-            axios.post(process.env.apiUrl+'/v1/shortener/'+this.currentFrame.activeID, this.currentFrame)
+            axios.post(baseUrl+'/'+this.currentFrame.activeID, this.currentFrame)
                 .then((result) => {
                     console.log(result)
                     this.$nuxt.$emit('onSaveEditForm', this.currentFrame);
+                    this.basic.dialog=false;
+                    this.$router.go(); //XXX: Fix it reload
                 });
           } else if (this.isCurrentActionInsert()) {
               console.log('Insert');
-              axios.post(process.env.apiUrl+'/v1/shortener/', this.currentFrame)
+              axios.post(baseUrl, this.currentFrame)
                 .then((result) => {
                     console.log(result)
                     this.$nuxt.$emit('onSaveEditForm', this.currentFrame);
+                    this.basic.dialog=false;
+                    this.$router.go(); //XXX: Fix it reload
                 });
           }
           
@@ -227,6 +232,10 @@ export default {
 
     isCurrentActionInsert() {
         return this.currentFrame.action === 'insert';
+    },
+
+    getBaseUrl() {
+        return this.$store.state.dgs.baseUrl;
     }
   },
   mounted() {

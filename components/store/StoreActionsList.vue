@@ -3,12 +3,13 @@
         <v-icon>edit</v-icon>
     </v-btn>
 
-    <v-btn v-else-if="nameField === 'remove'" depressed outline icon fab dark color="pink" small>
+    <v-btn v-else-if="nameField === 'remove'" depressed outline icon fab dark color="pink" small @click="onRemove(dataFields.item.id)">
         <v-icon>delete</v-icon>
     </v-btn>
 </template>
 
 <script>
+import axios from "axios";
 export default {
   name: 'store-actions-list',  
   props: {
@@ -38,10 +39,20 @@ export default {
   }),
   methods: {
       handleUpdateChild(item) {
-          //Subscriber in StoreEditList
           this.$root.$emit('handleUpdateEditRoot', item);
-          //this.$nuxt.$emit('handleUpdateEditRootBasicDialog', item);
       },
+      onRemove(id) {
+          let resAnswer = confirm("Are You Sure Remove Row ID#"+id); //XXX: Add message with dgs
+          if (resAnswer) {
+              axios.delete(this.$store.state.dgs.baseUrl+'/'+id)
+                .then((result) => {
+                    console.log(result)
+                    this.$destroy();
+                    this.$el.parentElement.parentElement.remove();
+                    //this.$el.parentNode.removeChild(this.$el);
+                });
+          }
+      }
   },
 //   mounted() {
 //       this.$nuxt.$on('onSaveEditForm', (frame) => {

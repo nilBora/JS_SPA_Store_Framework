@@ -199,7 +199,7 @@
 </template>
 
 <script>
-  import API from '@/api';
+  import API from '@/API';
   import EChart from '@/components/chart/echart';
   import MiniStatistic from '@/components/widgets/statistic/MiniStatistic';
   import PostListCard from '@/components/widgets/card/PostListCard';
@@ -217,6 +217,7 @@
   import LinearStatistic from '@/components/widgets/statistic/LinearStatistic';
 
   export default {
+    middleware: [ 'auth' ],
     layout: 'dashboard',
     components: {
       VWidget,

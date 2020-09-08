@@ -28,7 +28,7 @@
                   <v-icon color="light-blue">fa fa-twitter fa-lg</v-icon>
                 </v-btn>
                 <v-spacer></v-spacer>
-                <v-btn block color="primary" @click="login" :loading="loading">Login</v-btn>
+                <v-btn block color="primary" @click="requestLogin" :loading="loading">Login</v-btn>
               </v-card-actions>
             </v-card>
           </v-flex>
@@ -44,17 +44,25 @@
     data: () => ({
       loading: false,
       model: {
-        username: 'admin@example.com',
-        password: 'password'
+        username: 'demo@demo.com',
+        password: 'admin1'
       }
     }),
 
     methods: {
-      login() {
-        this.loading = true;
-        setTimeout(() => {
-          this.$router.push('/dashboard');
-        }, 1000);
+      // login() {
+      //   this.loading = true;
+      //   setTimeout(() => {
+      //     this.$router.push('/dashboard');
+      //   }, 1000);
+      // },
+      requestLogin () {
+        this.$auth.loginWith('local', {
+          data: {
+            username: this.model.username,
+            password: this.model.password
+          }
+        })
       }
     }
 

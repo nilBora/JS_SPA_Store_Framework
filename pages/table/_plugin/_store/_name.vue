@@ -94,6 +94,7 @@
   import axios from "axios";
 
   export default {
+    middleware: [ 'auth' ],
     components: {
       StoreList,
       StoreListItems,
@@ -102,6 +103,7 @@
     },
     data() {
       return {
+        baseUrl: this.getBaseUrl(),  
         date: new Date().toISOString().substr(0, 10),
         dateFormatted: this.formatDate(new Date().toISOString().substr(0, 10)),
         menu2: false,
@@ -121,25 +123,32 @@
         }
       };
     },
+    created() {
+        console.log("Created");
+    },
     fetch ({ store, params }) {
-      return axios.get(process.env.apiUrl+'/v1/shortener/')
+        let controllerName = params.plugin;
+        let storeName = params.store;
+        let apiUrl = process.env.apiUrl;
+        let url = process.env.apiUrl + controllerName;
+        if (storeName !== undefined) {
+            url += "/"+storeName;
+        }
+        store.commit('dgs/addBaseUrl', url)
+        
+      //console.log("Fetch URL: "+this.getBaseUrl());
+      return axios.get(url)
       .then((res) => {
-        store.commit('dgs/addItems', res.data.items)
-        store.commit('dgs/addStruct', res.data.struct)
+          console.log('RES!!!');
+          console.log(res);
+        store.commit('dgs/addItems', res.data.data.items)
+        store.commit('dgs/addStruct', res.data.data.struct)
       })
     },
     computed: {
       computedDateFormatted () {
         return this.formatDate(this.date)
       },
-      // frame: {
-      //   get() {
-      //     return this.$store.state.dgs.mainFrame;
-      //   },
-      //   set(value) {
-      //      this.$store.commit('dgs/addMainFrame', value)
-      //   }
-      // }
     },
     watch: {
       date (val) {
@@ -175,8 +184,27 @@
         openInsertForm() {
           this.basic.dialog = true;
           this.basic.action = 'insert';
-          this.basic.dialogName = "Insert New Row";
+          this.basic.dialogName = "Insert New Row"; //XXX: get with dgs
           this.$refs.basic_dialog.openInsertForm(this.basic);
+        },
+        
+        getBaseUrl() {
+            return this.$store.state.dgs.baseUrl;
+        },
+
+        getControllerName() {
+            let pathData = this.getUrlPathData();
+            return pathData[1];
+        },
+        getStoreName() {
+            let pathData = this.getUrlPathData();
+            return pathData[2];
+        },
+
+        getUrlPathData() {
+          return window.location.pathname.split("/").filter(function (el) {
+            return el != "";
+          });
         }
     },
     mounted() {
