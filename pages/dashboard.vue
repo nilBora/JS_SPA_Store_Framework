@@ -199,7 +199,7 @@
 </template>
 
 <script>
-  import API from '@/API';
+  import API from '@/api/index';
   import EChart from '@/components/chart/echart';
   import MiniStatistic from '@/components/widgets/statistic/MiniStatistic';
   import PostListCard from '@/components/widgets/card/PostListCard';
