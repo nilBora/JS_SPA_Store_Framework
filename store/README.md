@@ -1,10 +1,9 @@
 # STORE
 
-**This directory is not required, you can delete it if you don't want to use it.**
+### (Origin Dasboard Template)[https://github.com/moeddami/nuxt-material-admin]
 
-This directory contains your Vuex Store files.
-Vuex Store option is implemented in the Nuxt.js framework.
+## Описание
 
-Creating a file in this directory automatically activates the option in the framework.
+Все запросы для стора идут по роуту `table/{name}` в коде логика обрабатывается в `page/table/_plugin/_store/_name.vue`
 
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/guide/vuex-store).
+На беке мы просто создаем dgs с данными которые хотим вывести в админке
