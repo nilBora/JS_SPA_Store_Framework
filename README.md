@@ -2,6 +2,16 @@
 
 ### (Origin Dasboard Template)[https://github.com/moeddami/nuxt-material-admin]
 
+## Установка и запуск
+`yarn install`
+
+`yarn run dev`
+
+Для билда
+
+`yarn run build`
+
+
 ## Описание
 
 Все запросы для стора идут по роуту `table/{name}` в коде логика обрабатывается в `page/table/_plugin/_store/_name.vue`
