@@ -12,6 +12,9 @@
             <v-icon>check_circle</v-icon>
         </v-btn>
     </td>
+    <td v-else-if="itemField.type === 'foreignKey'">
+        {{ dataFields.item[itemField['alias']][itemField['foreignValueField']] }}
+    </td>
     <td d-none v-else-if="itemField.type === 'CHECK_SUM'"></td>
     <td v-else>{{ dataFields.item[nameField] }}</td>
 </template>

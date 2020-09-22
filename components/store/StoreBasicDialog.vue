@@ -85,7 +85,30 @@
                         type="hidden"
                     ></v-text-field>
                     </v-flex>
-
+                    <v-flex xs12 
+                    v-else-if="itemField.type === 'foreignKey'">
+                         <!-- currentItem[itemField['alias']][itemField['foreignValueField']] -->
+                        <v-select v-if="currentItem[itemField['alias']] !== undefined"
+                            autocomplete
+                            :label="itemField.caption"
+                            placeholder="Select..."
+                            :rules="[() => !!customData[itemField.name] || 'This field is required']"
+                            :items="customData[itemField.name]"
+                            v-model="currentItem[itemField['alias']][itemField['foreignValueField']]"
+                            ref="country"
+                            required
+                        ></v-select>
+                        <v-select v-else
+                            autocomplete
+                            :label="itemField.caption"
+                            placeholder="Select..."
+                            :rules="[() => !!customData[itemField.name] || 'This field is required']"
+                            :items="customData[itemField.name]"
+                            v-model="default_blank"
+                            ref="country"
+                            required
+                        ></v-select>
+                    </v-flex>
                     <!-- XXX: Check this logic -->
                     <v-flex xs12 
                     v-else-if="(itemField.onlyList === false && itemField.readonly === false) || (itemField.readonly === true && isCurrentActionEdit())">
@@ -137,6 +160,8 @@ export default {
   data() {
       return {
         currentFrame: this.getEmptyBlankData(),
+        currentItem: {},
+        customData: {}
       }
   },
   methods: {
@@ -147,6 +172,7 @@ export default {
       },
       getEmptyBlankData() {
         let fields = this.getFields();
+
         let currentFrame = {};
 
         for (var key in fields) {
@@ -185,6 +211,8 @@ export default {
           //this.$refs.storeEditList.onSaveEditForm();
     },
     handleUpdate(item) {
+        
+        
         this.currentFrame = this.getEmptyBlankData();
         let fields = this.getFields();
         
@@ -197,6 +225,7 @@ export default {
          }
         this.currentFrame.activeID = item.id;
 
+        this.currentItem = item;
 
         this.currentFrame.dialogName = this.getDialogName(item);
         
@@ -219,6 +248,27 @@ export default {
     },
 
     getFields: function() {
+        console.log('Fields');
+        console.log(this.allFields);
+        let fields = this.allFields;
+         for (var key in fields) {
+            if (fields[key]['type'] === 'foreignKey') {
+                let currentField = fields[key];
+                //XXX: Fix it replace in backend. Routing
+                axios.get(process.env.apiUrl+currentField['foreignTable'].replace('_',''))
+                .then((result) => {
+                    let items = result.data.data.items;
+                    let values = [];
+                    for(let keyItem in items) {
+                        values.push(items[keyItem][currentField['foreignValueField']])
+                    }
+
+                    this.customData[currentField['name']] = values;
+                    //console.log("GET FOREIGN KEY")
+                    //console.log(result.data.data)
+                });
+            } 
+         }
         return this.allFields;
     },
 

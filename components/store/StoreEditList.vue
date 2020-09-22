@@ -58,6 +58,10 @@
         ></v-switch>
     </v-flex>
     <v-flex xs12 
+    v-else-if="itemField.type === 'foreignKey'">
+        111
+    </v-flex>
+    <v-flex xs12 
     v-else-if="itemField.onlyList === false">
         <v-text-field 
         v-model="frame[nameField]" 
